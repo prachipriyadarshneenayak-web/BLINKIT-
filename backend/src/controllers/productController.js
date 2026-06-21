@@ -1,4 +1,5 @@
-const Product = require("../models/product");
+const cloudinary = require("../config/cloudinary");
+const Product = require("../models/Product");
 
 // Create Product
 const createProduct = async (req, res) => {
@@ -152,6 +153,29 @@ const addReview = async (req, res) => {
   }
 };
 
+const uploadProductImage = async (req, res) => {
+  try {
+    console.log("UPLOAD ROUTE HIT");
+
+    const result = await cloudinary.uploader.upload(
+      req.file.path,
+      {
+        folder: "blinkit-products",
+      }
+    );
+
+    res.status(200).json({
+      imageUrl: result.secure_url,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   createProduct,
   getProducts,
@@ -159,4 +183,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   addReview,
+  uploadProductImage,
 };

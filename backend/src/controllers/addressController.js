@@ -37,7 +37,10 @@ const getAddresses = async (req, res) => {
 // Delete Address
 const deleteAddress = async (req, res) => {
   try {
-    await Address.findByIdAndDelete(req.params.id);
+    await Address.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.id,
+    });
 
     res.status(200).json({
       message: "Address Deleted Successfully",

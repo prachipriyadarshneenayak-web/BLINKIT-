@@ -40,6 +40,7 @@ const orderSchema = new mongoose.Schema(
         "Packed",
         "Out For Delivery",
         "Delivered",
+        "Cancelled",
       ],
       default: "Pending",
     },

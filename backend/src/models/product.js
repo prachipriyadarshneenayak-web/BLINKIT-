@@ -30,6 +30,11 @@ const productSchema = new mongoose.Schema(
       type: String,
     },
 
+    restaurant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant",
+    },
+
     reviews: [
       {
         user: {

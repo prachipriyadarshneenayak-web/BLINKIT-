@@ -87,9 +87,26 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+// Get All Orders (Admin)
+
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("user", "name email")
+      .populate("products.product");
+
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   placeOrder,
   getMyOrders,
   getOrderById,
   updateOrderStatus,
+  getAllOrders,
 };
