@@ -1,6 +1,8 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
+
 const connectDB = require("./src/config/db");
 
 // Routes
@@ -13,13 +15,20 @@ const dashboardRoutes = require("./src/routes/dashboardRoutes");
 const restaurantRoutes = require("./src/routes/restaurantRoutes");
 const wishlistRoutes = require("./src/routes/wishlistRoutes");
 const paymentRoutes = require("./src/routes/paymentRoutes");
-
+const userRoutes = require("./src/routes/userRoutes");
 // Connect Database
 connectDB();
 
 const app = express();
 
 // Middleware
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // Routes
@@ -32,6 +41,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/users", userRoutes);
 
 // Home Route
 app.get("/", (req, res) => {

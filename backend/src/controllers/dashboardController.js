@@ -1,27 +1,25 @@
-const User = require("../models/User");
 const Product = require("../models/Product");
 const Order = require("../models/Order");
+const User = require("../models/User");
 
 const getDashboardStats = async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments();
+    const products = await Product.countDocuments();
+    const orders = await Order.countDocuments();
+    const users = await User.countDocuments();
 
-    const totalProducts = await Product.countDocuments();
+    const orderData = await Order.find();
 
-    const totalOrders = await Order.countDocuments();
-
-    const orders = await Order.find();
-
-    const totalRevenue = orders.reduce(
-      (sum, order) => sum + order.totalAmount,
+    const revenue = orderData.reduce(
+      (sum, order) => sum + order.totalPrice,
       0
     );
 
-    res.status(200).json({
-      totalUsers,
-      totalProducts,
-      totalOrders,
-      totalRevenue,
+    res.json({
+      products,
+      orders,
+      users,
+      revenue,
     });
   } catch (error) {
     res.status(500).json({

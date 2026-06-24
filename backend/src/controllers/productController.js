@@ -156,6 +156,7 @@ const addReview = async (req, res) => {
 const uploadProductImage = async (req, res) => {
   try {
     console.log("UPLOAD ROUTE HIT");
+    console.log(req.file.path);
 
     const result = await cloudinary.uploader.upload(
       req.file.path,
@@ -168,10 +169,12 @@ const uploadProductImage = async (req, res) => {
       imageUrl: result.secure_url,
     });
   } catch (error) {
+    console.log("CLOUDINARY ERROR:");
     console.log(error);
 
     res.status(500).json({
       message: error.message,
+      error,
     });
   }
 };
