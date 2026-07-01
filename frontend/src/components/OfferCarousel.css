@@ -1,0 +1,147 @@
+.offer-carousel{
+    max-width:1380px;
+    margin:35px auto;
+    padding:0 20px;
+}
+
+.offer-slide{
+
+    height:320px;
+
+    border-radius:28px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    overflow:hidden;
+
+    padding:0 60px;
+
+    transition:.5s;
+
+}
+
+.offer-content{
+
+flex:1;
+
+}
+
+.offer-content h1{
+
+font-size:58px;
+
+font-weight:800;
+
+margin-bottom:15px;
+
+}
+
+.offer-content p{
+
+font-size:20px;
+
+color:#555;
+
+margin-bottom:25px;
+
+}
+
+.offer-content button{
+
+background:#0c831f;
+
+color:white;
+
+border:none;
+
+padding:16px 30px;
+
+border-radius:14px;
+
+cursor:pointer;
+
+font-size:17px;
+
+font-weight:700;
+
+}
+
+.offer-slide img{
+
+width:420px;
+
+object-fit:contain;
+
+}
+
+.dots{
+
+display:flex;
+
+justify-content:center;
+
+gap:10px;
+
+margin-top:18px;
+
+}
+
+.dot{
+
+width:12px;
+
+height:12px;
+
+border-radius:50%;
+
+background:#d1d5db;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.active-dot{
+
+background:#0c831f;
+
+width:28px;
+
+border-radius:20px;
+
+}
+
+@media(max-width:900px){
+
+.offer-slide{
+
+flex-direction:column;
+
+height:auto;
+
+padding:35px;
+
+text-align:center;
+
+}
+
+.offer-slide img{
+
+width:280px;
+
+margin-top:20px;
+
+}
+
+.offer-content h1{
+
+font-size:38px;
+
+}
+
+}

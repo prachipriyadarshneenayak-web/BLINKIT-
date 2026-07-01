@@ -1,0 +1,37 @@
+.brand-section {
+  max-width: 1380px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.brand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+}
+
+.brand-card {
+  background: white;
+  border-radius: 18px;
+  padding: 30px;
+  height: 120px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,.06);
+
+  transition: .3s;
+}
+
+.brand-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 35px rgba(0,0,0,.12);
+}
+
+.brand-card img {
+  max-width: 130px;
+  max-height: 70px;
+  object-fit: contain;
+}

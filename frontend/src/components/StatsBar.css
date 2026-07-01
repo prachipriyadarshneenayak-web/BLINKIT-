@@ -1,0 +1,105 @@
+.stats-bar {
+  max-width: 1380px;
+  margin: 30px auto;
+  padding: 22px 28px;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+
+  background: #fff;
+  border-radius: 20px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+
+  min-height: 90px;
+  padding: 10px;
+
+  border-radius: 16px;
+
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  background: #f8fff9;
+  transform: translateY(-3px);
+}
+
+.stat-item strong {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0c831f;
+}
+
+.stat-item span {
+  margin-top: 6px;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+/* ================= Tablet ================= */
+
+@media (max-width: 768px) {
+
+  .stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .stat-item {
+    min-height: 80px;
+  }
+
+  .stat-item strong {
+    font-size: 22px;
+  }
+
+  .stat-item span {
+    font-size: 14px;
+  }
+}
+
+/* ================= Mobile ================= */
+
+@media (max-width: 480px) {
+
+  .stats-bar {
+    grid-template-columns: 1fr;
+
+    margin: 20px 12px;
+    padding: 18px;
+  }
+
+  .stat-item {
+    min-height: 70px;
+  }
+
+  .stat-item strong {
+    font-size: 20px;
+  }
+
+  .stat-item span {
+    font-size: 13px;
+  }
+}
+
+/* ================= Touch Devices ================= */
+
+@media (hover: none) {
+
+  .stat-item:hover {
+    background: transparent;
+    transform: none;
+  }
+
+}

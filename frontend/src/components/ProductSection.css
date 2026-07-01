@@ -1,0 +1,186 @@
+.product-section {
+  max-width: 1400px;
+  margin: 50px auto;
+  padding: 0 16px;
+}
+
+/* Header */
+
+.products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 25px;
+}
+
+.products-header h2 {
+  font-size: 34px;
+  font-weight: 800;
+  color: #1f2937;
+}
+
+.products-header p {
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+/* Header Actions */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* View All */
+
+.view-all-btn {
+  border: none;
+  background: transparent;
+  color: #0c831f;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.view-all-btn:hover {
+  transform: translateX(5px);
+}
+
+/* Arrow Buttons */
+
+.arrow-btn {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: #f3f4f6;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.arrow-btn:hover {
+  background: #0c831f;
+  color: white;
+  transform: scale(1.08);
+}
+
+/* Products Slider */
+
+.products-slider {
+  display: flex;
+  gap: 22px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  padding-bottom: 15px;
+}
+
+.products-slider::-webkit-scrollbar {
+  display: none;
+}
+
+/* Product Card Snap */
+
+.product-card {
+  scroll-snap-align: start;
+}
+
+/* Empty State */
+
+.no-products {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.no-products h1 {
+  font-size: 60px;
+}
+
+.no-products p {
+  color: #666;
+}
+
+/* ===========================
+   Tablet
+=========================== */
+
+@media (max-width: 768px) {
+
+  .product-section {
+    margin: 40px auto;
+  }
+
+  .products-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .products-header h2 {
+    font-size: 26px;
+  }
+
+  .products-header p {
+    font-size: 14px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* Swipe is enough on mobile/tablet */
+
+  .arrow-btn {
+    display: none;
+  }
+}
+
+/* ===========================
+   Mobile
+=========================== */
+
+@media (max-width: 480px) {
+
+  .product-section {
+    padding: 0 12px;
+  }
+
+  .products-header h2 {
+    font-size: 22px;
+  }
+
+  .products-header p {
+    font-size: 13px;
+  }
+
+  .view-all-btn {
+    font-size: 14px;
+  }
+
+  .products-slider {
+    gap: 14px;
+  }
+}
+
+/* ===========================
+   Touch Devices
+=========================== */
+
+@media (hover: none) {
+
+  .arrow-btn:hover {
+    transform: none;
+    background: #f3f4f6;
+    color: inherit;
+  }
+
+  .view-all-btn:hover {
+    transform: none;
+  }
+}
