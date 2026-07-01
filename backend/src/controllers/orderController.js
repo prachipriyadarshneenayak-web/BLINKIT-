@@ -1,4 +1,6 @@
 const Order = require("../models/Order");
+const transporter = require("../config/mail");
+const User = require("../models/User");
 
 // Place Order
 const placeOrder = async (req, res) => {
@@ -10,6 +12,62 @@ const placeOrder = async (req, res) => {
       products,
       totalAmount,
       address,
+    });
+
+    const user = await User.findById(req.user.id);
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: "🛒 Order Confirmed - Blinkit Clone",
+
+      html: `
+        <div style="font-family:Arial,sans-serif;padding:20px">
+          <h2 style="color:#0c831f">
+            Thank you for your order, ${user.name}! 🎉
+          </h2>
+
+          <p>Your order has been placed successfully.</p>
+
+          <table style="border-collapse:collapse;margin-top:20px">
+            <tr>
+              <td><strong>Order ID</strong></td>
+              <td>${order._id}</td>
+            </tr>
+
+            <tr>
+              <td><strong>Total Amount</strong></td>
+              <td>₹${order.totalAmount}</td>
+            </tr>
+
+            <tr>
+              <td><strong>Status</strong></td>
+              <td>${order.status}</td>
+            </tr>
+
+            <tr>
+              <td><strong>Payment</strong></td>
+              <td>${order.isPaid ? "Paid" : "Pending"}</td>
+            </tr>
+          </table>
+
+          <p style="margin-top:20px">
+            Delivery Address:
+          </p>
+
+          <p>${order.address}</p>
+
+          <hr>
+
+          <p>
+            We will notify you once your order is packed and shipped.
+          </p>
+
+          <h3 style="color:#0c831f">
+            Blinkit Clone Team 💚
+          </h3>
+        </div>
+      `,
     });
 
     res.status(201).json({

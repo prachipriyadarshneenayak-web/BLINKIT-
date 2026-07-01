@@ -3,11 +3,13 @@ const router = express.Router();
 
 const protect = require("../middleware/authMiddleware");
 const admin = require("../middleware/adminMiddleware");
+const upload = require("../middleware/uploadMiddleware");
 
 const {
   getAllUsers,
   deleteUser,
   makeAdmin,
+  updateAvatar,
 } = require("../controllers/userController");
 
 // Get All Users
@@ -32,6 +34,13 @@ router.put(
   protect,
   admin,
   makeAdmin
+);
+
+router.put(
+  "/avatar",
+  protect,
+  upload.single("image"),
+  updateAvatar
 );
 
 module.exports = router;

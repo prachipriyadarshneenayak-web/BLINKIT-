@@ -16,6 +16,11 @@ const restaurantRoutes = require("./src/routes/restaurantRoutes");
 const wishlistRoutes = require("./src/routes/wishlistRoutes");
 const paymentRoutes = require("./src/routes/paymentRoutes");
 const userRoutes = require("./src/routes/userRoutes");
+
+const couponRoutes = require("./src/routes/couponRoutes");
+const chatbotRoutes = require("./src/routes/chatbotRoutes");
+const errorHandler = require("./src/middleware/errorMiddleware");
+
 // Connect Database
 connectDB();
 
@@ -42,6 +47,8 @@ app.use("/api/restaurants", restaurantRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/coupons", couponRoutes);
+app.use("/api/chatbot", chatbotRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
@@ -54,6 +61,9 @@ app.use((req, res) => {
     message: "Route Not Found",
   });
 });
+
+// Global Error Handler
+app.use(errorHandler);
 
 // Start Server
 const PORT = process.env.PORT || 5000;

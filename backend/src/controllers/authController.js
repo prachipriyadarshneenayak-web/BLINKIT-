@@ -1,6 +1,9 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const transporter = require("../config/mail");
+const asyncHandler = require("express-async-handler");
 
 // Register User
 const registerUser = async (req, res) => {
@@ -24,6 +27,34 @@ const registerUser = async (req, res) => {
       role,
     });
 
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "🎉 Welcome to Blinkit Clone",
+
+      html: `
+        <div style="font-family:Arial,sans-serif;padding:20px">
+          <h2 style="color:#0c831f">
+            Welcome ${name}! 👋
+          </h2>
+
+          <p>
+            Your account has been created successfully.
+          </p>
+
+          <p>
+            You can now login and start shopping.
+          </p>
+
+          <hr/>
+
+          <h3>
+            Blinkit Clone Team 💚
+          </h3>
+        </div>
+      `,
+    });
+
     res.status(201).json({
       message: "User Registered Successfully",
       user,
@@ -36,51 +67,45 @@ const registerUser = async (req, res) => {
 };
 
 // Login User
-const loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+const loginUser = asyncHandler(async (req, res) => {
 
-    const user = await User.findOne({ email });
+  const { email, password } = req.body;
 
-    if (!user) {
-      return res.status(400).json({
-        message: "Invalid Email or Password",
-      });
-    }
+  const user = await User.findOne({ email });
 
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
-
-    if (!isMatch) {
-      return res.status(400).json({
-        message: "Invalid Email or Password",
-      });
-    }
-
-    const token = jwt.sign(
-      {
-        id: user._id,
-        role: user.role,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
-
-    res.status(200).json({
-      message: "Login Successful",
-      token,
-      user,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+  if (!user) {
+    res.status(400);
+    throw new Error("Invalid Email or Password");
   }
-};
+
+  const isMatch = await bcrypt.compare(
+    password,
+    user.password
+  );
+
+  if (!isMatch) {
+    res.status(400);
+    throw new Error("Invalid Email or Password");
+  }
+
+  const token = jwt.sign(
+    {
+      id: user._id,
+      role: user.role,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "7d",
+    }
+  );
+
+  res.json({
+    message: "Login Successful",
+    token,
+    user,
+  });
+
+});
 
 const changePassword = async (req, res) => {
   try {
@@ -153,10 +178,119 @@ const updateProfile = async (req, res) => {
   }
 };
 
+// Forgot Password
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const resetToken = crypto
+      .randomBytes(32)
+      .toString("hex");
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpire =
+      Date.now() + 15 * 60 * 1000;
+
+    await user.save();
+
+    const resetUrl =
+      `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: "Reset Your Password",
+
+      html: `
+        <h2>Password Reset</h2>
+
+        <p>Hello ${user.name},</p>
+
+        <p>
+          Click the button below to reset your password.
+        </p>
+
+        <a
+          href="${resetUrl}"
+          style="
+            display:inline-block;
+            padding:12px 20px;
+            background:#0c831f;
+            color:#fff;
+            text-decoration:none;
+            border-radius:6px;
+          "
+        >
+          Reset Password
+        </a>
+
+        <p>
+          This link expires in 15 minutes.
+        </p>
+      `,
+    });
+
+    res.json({
+      message: "Password reset email sent",
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// Reset Password
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpire: {
+        $gt: Date.now(),
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid or Expired Token",
+      });
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    res.json({
+      message: "Password Reset Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   changePassword,
   getProfile,
   updateProfile,
+  forgotPassword,
+  resetPassword,
 };

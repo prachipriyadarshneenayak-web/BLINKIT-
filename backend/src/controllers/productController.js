@@ -84,8 +84,16 @@ const updateProduct = async (req, res) => {
     const product = await Product.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      {
+        new: true,
+      }
     );
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product Not Found",
+      });
+    }
 
     res.status(200).json({
       message: "Product Updated Successfully",
@@ -101,7 +109,15 @@ const updateProduct = async (req, res) => {
 // Delete Product
 const deleteProduct = async (req, res) => {
   try {
-    await Product.findByIdAndDelete(req.params.id);
+    const product = await Product.findByIdAndDelete(
+      req.params.id
+    );
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product Not Found",
+      });
+    }
 
     res.status(200).json({
       message: "Product Deleted Successfully",
@@ -118,7 +134,9 @@ const addReview = async (req, res) => {
   try {
     const { rating, comment } = req.body;
 
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(
+      req.params.id
+    );
 
     if (!product) {
       return res.status(404).json({
@@ -126,19 +144,41 @@ const addReview = async (req, res) => {
       });
     }
 
+    // Check if already reviewed
+    const alreadyReviewed = product.reviews.find(
+      (review) =>
+        review.user.toString() === req.user.id
+    );
+
+    if (alreadyReviewed) {
+      return res.status(400).json({
+        message:
+          "You have already reviewed this product",
+      });
+    }
+
+    // Add review
     product.reviews.push({
       user: req.user.id,
-      rating,
+      rating: Number(rating),
       comment,
     });
 
+    // Calculate average rating
     const totalRating = product.reviews.reduce(
       (sum, review) => sum + review.rating,
       0
     );
 
     product.averageRating =
-      totalRating / product.reviews.length;
+      product.reviews.length > 0
+        ? Number(
+            (
+              totalRating /
+              product.reviews.length
+            ).toFixed(1)
+          )
+        : 0;
 
     await product.save();
 
@@ -153,28 +193,25 @@ const addReview = async (req, res) => {
   }
 };
 
+// Upload Product Image
 const uploadProductImage = async (req, res) => {
   try {
-    console.log("UPLOAD ROUTE HIT");
-    console.log(req.file.path);
-
-    const result = await cloudinary.uploader.upload(
-      req.file.path,
-      {
-        folder: "blinkit-products",
-      }
-    );
+    const result =
+      await cloudinary.uploader.upload(
+        req.file.path,
+        {
+          folder: "blinkit-products",
+        }
+      );
 
     res.status(200).json({
       imageUrl: result.secure_url,
     });
   } catch (error) {
-    console.log("CLOUDINARY ERROR:");
     console.log(error);
 
     res.status(500).json({
       message: error.message,
-      error,
     });
   }
 };
